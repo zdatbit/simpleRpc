@@ -8,3 +8,9 @@ target/
 /log
 **.log
 metastore_db/
+.gradle
+build
+gradlew
+gradle
+gradlew.bat
+./build

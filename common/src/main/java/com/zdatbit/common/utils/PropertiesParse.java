@@ -15,26 +15,15 @@ public class PropertiesParse {
      * 读取解析properties文件
      */
     public static Properties readProperties(String filePath) {
+        InputStream resourceAsStream = PropertiesParse.class.getClassLoader().getResourceAsStream(filePath);
         Properties properties = new Properties();
-        File file = new File(filePath);
-        if(file.exists()) {
-            InputStream inStream = null;
-            try {
-                inStream = new FileInputStream(file);
-                properties.load(inStream);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }finally {
-                if(inStream != null) {
-                    try {
-                        inStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+        try{
+            if(resourceAsStream!=null) {
+                properties.load(resourceAsStream);
+            }else{
+                logger.error("properties文件未找到，请核对提供文件路径！");
             }
-        }else {
-            logger.error("properties文件未找到，请核对提供文件路径！");
+        }catch (Exception e){
             return null;
         }
         return properties;
