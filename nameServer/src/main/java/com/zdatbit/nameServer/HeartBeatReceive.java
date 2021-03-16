@@ -9,13 +9,17 @@ import java.net.InetSocketAddress;
 public class HeartBeatReceive extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
-        System.out.println("**"+msg+"--");
-//        HeartBeat heartBeat = JSON.parseObject(msg,HeartBeat.class);
-//        InetSocketAddress inetAddress = (InetSocketAddress) channelHandlerContext.channel().remoteAddress();
-//        heartBeat.setIp(inetAddress.getAddress().getHostAddress());
-//        heartBeat.setPort(inetAddress.getPort());
-//        System.out.println(JSON.toJSON(heartBeat));
-//        channelHandlerContext.writeAndFlush("消息上传成功");
+//        System.out.println("**"+msg+"--");
+        HeartBeat heartBeat = JSON.parseObject(msg,HeartBeat.class);
+        if(heartBeat.getClusterName()!=null&&heartBeat.getLastUpdate()!=0&&heartBeat.getName()!=null) {
+            System.out.println("**"+msg);
+            InetSocketAddress inetAddress = (InetSocketAddress) channelHandlerContext.channel().remoteAddress();
+            heartBeat.setIp(inetAddress.getAddress().getHostAddress());
+            heartBeat.setPort(inetAddress.getPort());
+            channelHandlerContext.writeAndFlush("消息上传成功\n");
+        }else{
+            channelHandlerContext.fireChannelRead(msg);
+        }
     }
 
     @Override

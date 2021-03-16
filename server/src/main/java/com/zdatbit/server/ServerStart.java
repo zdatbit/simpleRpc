@@ -4,12 +4,15 @@ import com.zdatbit.common.Config;
 import com.zdatbit.common.HeartBeat;
 import com.zdatbit.common.annotations.SMethod;
 import com.zdatbit.common.annotations.SService;
+import com.zdatbit.common.serverRegister.Methods;
+import com.zdatbit.common.serverRegister.Parameters;
 import com.zdatbit.common.serverRegister.ServiceRegisterEntity;
 import com.zdatbit.common.utils.PropertiesParse;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.InetAddress;
 import java.util.*;
 
@@ -154,14 +157,25 @@ public class ServerStart {
             return null;
         }
         registerEntity.setServiceInter(interfaceNames);
-        List<Method> methods = new ArrayList<>();
-
+        List<Methods> methods = new ArrayList<>();
         for(Class clazz:targetInterface) {
             Method[] declaredMethods = clazz.getDeclaredMethods();
             Arrays.stream(declaredMethods).forEach(method -> {
                 SMethod annotation1 = method.getAnnotation(SMethod.class);
                 if (annotation1 != null) {
-                    methods.add(method);
+                    List<Parameters> parameters = new ArrayList<>();
+                    //methods.add(method);
+                    Methods methods1 = new Methods();
+                    methods1.setMethod(method.getName());
+                    Parameter[] parameters1 = method.getParameters();
+                    for(Parameter parameter:parameters1){
+                        Parameters parameters2 = new Parameters();
+                        parameters2.setParaName(parameter.getName()).
+                        setType(parameter.getType().getTypeName());
+                        parameters.add(parameters2);
+                    }
+                    methods1.setParameters(parameters);
+                    methods.add(methods1);
                 }
             });
         }

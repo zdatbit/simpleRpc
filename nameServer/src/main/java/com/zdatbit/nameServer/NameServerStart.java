@@ -36,6 +36,7 @@ public class NameServerStart {
                             socketChannel.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
                             socketChannel.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
                             socketChannel.pipeline().addLast(new HeartBeatReceive());
+                            socketChannel.pipeline().addLast(new ServiceRegister());
                         }
                     });
 

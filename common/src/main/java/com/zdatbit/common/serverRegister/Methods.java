@@ -11,5 +11,5 @@ public class Methods {
     /**方法**/
     private String method;
     /**方法参数**/
-    private List<Object> parameters;
+    private List<Parameters> parameters;
 }

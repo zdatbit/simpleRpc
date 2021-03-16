@@ -16,7 +16,7 @@ public class ServiceRegisterEntity {
     /**服务实现**/
     private String serviceImpl;
     /**方法列表**/
-    private List<Method> methodsList;
+    private List<Methods> methodsList;
     /**IP地址**/
     private List<String> ips;
     /**服务端口**/
