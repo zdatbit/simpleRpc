@@ -1,4 +1,4 @@
-package com.zdatbit.nameServer;
+package com.zdatbit.nameServer.handler.server;
 
 import com.alibaba.fastjson.JSON;
 import com.zdatbit.common.HeartBeat;
@@ -6,7 +6,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import java.net.InetSocketAddress;
 
-public class HeartBeatReceive extends SimpleChannelInboundHandler<String> {
+/**
+ * 心跳
+ */
+public class HeartBeatReceiveHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
 //        System.out.println("**"+msg+"--");

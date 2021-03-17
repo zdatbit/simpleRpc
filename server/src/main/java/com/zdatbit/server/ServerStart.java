@@ -182,7 +182,9 @@ public class ServerStart {
         registerEntity.setMethodsList(methods);
         try {
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
-            registerEntity.setIps(Arrays.asList(hostAddress));
+            Set<String> set = new HashSet<>();
+            set.add(hostAddress);
+            registerEntity.setIps(set);
         }catch (Exception e){
             e.printStackTrace();
         }

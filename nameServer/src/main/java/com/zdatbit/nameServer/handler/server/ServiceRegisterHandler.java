@@ -1,20 +1,24 @@
-package com.zdatbit.nameServer;
+package com.zdatbit.nameServer.handler.server;
 
 import com.alibaba.fastjson.JSON;
 import com.zdatbit.common.serverRegister.ServiceRegisterEntity;
+import com.zdatbit.nameServer.ServiceInfos;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.net.InetSocketAddress;
 
-public class ServiceRegister extends SimpleChannelInboundHandler<String> {
+/**
+ * 服务信息注册
+ */
+public class ServiceRegisterHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
         System.out.println("----------------------------"+msg);
         ServiceRegisterEntity serviceRegisterEntity = JSON.parseObject(msg, ServiceRegisterEntity.class);
         if(serviceRegisterEntity.getServiceImpl()!=null&&serviceRegisterEntity.getServiceInter()!=null&&serviceRegisterEntity.getMethodsList()!=null) {
-            synchronized (ServiceRegister.class){
-                if(ServiceInfos.serviceInfos.get(serviceRegisterEntity.getServiceName())!=null) {
+            synchronized (ServiceRegisterHandler.class){
+                if(ServiceInfos.serviceInfos.get(serviceRegisterEntity.getServiceName())==null) {
                     ServiceInfos.serviceInfos.put(serviceRegisterEntity.getServiceName(), serviceRegisterEntity);
                 }else{
                     ServiceRegisterEntity registerEntity = ServiceInfos.serviceInfos.get(serviceRegisterEntity.getServiceName());
@@ -35,7 +39,7 @@ public class ServiceRegister extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        System.out.println(cause.getMessage());
+        cause.printStackTrace();
         System.out.println("error发生");
     }
 }
