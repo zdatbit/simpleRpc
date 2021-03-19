@@ -38,12 +38,12 @@ public class ServerStart {
         remotePort = properties.getProperty("remotePort");
     }
 
-
     public static void main(String[] args) {
         new ServerStart().start();
     }
 
-    private void start() {
+
+    public void start() {
         /**心跳**/
         HeartBeat heartBeat = parseHeatBeat();
 
