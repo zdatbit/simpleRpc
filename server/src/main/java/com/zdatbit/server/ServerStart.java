@@ -20,6 +20,8 @@ public class ServerStart {
 
     private static final String basePackage = "com.zdatbit";
 
+    private static final String propertyPath = "C:\\myApplication\\ideaSpace\\simpleRpc\\serviceServer\\src\\main\\resources\\config\\Server.properties";
+
     private static String serviceName;
     private static String serviceImpl;
     private static String servicePort;
@@ -30,7 +32,7 @@ public class ServerStart {
     private static Properties properties;
 
     static{
-        properties = PropertiesParse.readProperties("config/localConfig.properties");
+        properties = PropertiesParse.readProperties(propertyPath);
         serviceName = properties.getProperty("service.name");
         serviceImpl = properties.getProperty("service.impl");
         servicePort = properties.getProperty("service.port");
@@ -55,6 +57,11 @@ public class ServerStart {
         ServiceRegisterEntity registerEntity = parseRegisterInfo(classes);
         client = new RegistryClient(remoteIP,Integer.parseInt(remotePort),heartBeat,registerEntity);
         client.register();
+
+        //服务启动
+
+        new Server(servicePort).start();
+
 
     }
 
