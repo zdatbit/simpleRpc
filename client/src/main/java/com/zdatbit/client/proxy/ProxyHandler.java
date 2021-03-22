@@ -1,6 +1,7 @@
 package com.zdatbit.client.proxy;
 
 import com.zdatbit.client.ServiceInfos;
+import com.zdatbit.client.communication.Connect2Server;
 import com.zdatbit.client.exception.ProtocolException;
 import com.zdatbit.client.exception.ServiceNotFoundException;
 import com.zdatbit.common.serverRegister.ServiceRegisterEntity;
@@ -40,6 +41,8 @@ public class ProxyHandler implements InvocationHandler {
         }
         if(serviceRegister.getServiceImpl()==serviceImpl){
             //连接远程服务器
+            Connect2Server connect2Server = new Connect2Server(serviceRegister);
+            connect2Server.connAndSendMessage();
         }
         return null;
     }
