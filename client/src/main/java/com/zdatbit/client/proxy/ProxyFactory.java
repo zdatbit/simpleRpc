@@ -20,7 +20,7 @@ public class ProxyFactory {
             throw new ProtocolException("协议格式出错");
         }
         if(protocol.startsWith("tcp://")){
-            return protocol.substring(5);
+            return protocol.substring(6);
         }else{
             throw new ProtocolException();
         }

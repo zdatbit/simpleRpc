@@ -15,9 +15,9 @@ public class PropertiesParse {
      * 读取解析properties文件
      */
     public static Properties readProperties(String filePath) {
-        InputStream resourceAsStream = PropertiesParse.class.getClassLoader().getResourceAsStream(filePath);
         Properties properties = new Properties();
         try{
+            InputStream resourceAsStream =  new FileInputStream(new File(filePath));
             if(resourceAsStream!=null) {
                 properties.load(resourceAsStream);
             }else{

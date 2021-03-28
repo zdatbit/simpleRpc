@@ -36,6 +36,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
     }
 
     @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("有客户端连接进来"+ctx.channel().remoteAddress());
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
     }

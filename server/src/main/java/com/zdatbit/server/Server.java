@@ -46,7 +46,8 @@ public class Server {
                         }
                     });
 
-            ChannelFuture channelFuture = serverBootstrap.bind(new InetSocketAddress("localhost",8888)).sync();
+            ChannelFuture channelFuture = serverBootstrap.bind(new InetSocketAddress("localhost",Integer.parseInt(port))).sync();
+            System.out.println("服务器启动，启动端口号："+port);
             channelFuture.channel().closeFuture().sync();
         }catch (InterruptedException e){
             e.printStackTrace();

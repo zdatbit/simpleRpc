@@ -56,11 +56,11 @@ public class ServerStart {
         Set<Class> classes = loadClass(basePackage, classLoader);
         ServiceRegisterEntity registerEntity = parseRegisterInfo(classes);
         client = new RegistryClient(remoteIP,Integer.parseInt(remotePort),heartBeat,registerEntity);
-        client.register();
+        new Thread(()->client.register()).start();
 
         //服务启动
 
-        new Server(servicePort).start();
+        new Thread(()->new Server(servicePort).start()).start();
 
 
     }

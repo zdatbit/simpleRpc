@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class ServiceMetaHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
-        System.out.println("客服端收到服务器返回的消息"+s);
+        //System.out.println("客服端收到服务器返回的消息"+s);
         HashMap<String, JSONObject> hashMap = JSONObject.parseObject(s, HashMap.class);
         hashMap.forEach((key,value)->{
             ServiceRegisterEntity serviceRegisterEntity = JSONObject.parseObject(String.valueOf(value), ServiceRegisterEntity.class);

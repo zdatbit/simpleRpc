@@ -1,5 +1,6 @@
 package com.zdatbit.client.proxy;
 
+import com.zdatbit.client.ClientStart;
 import com.zdatbit.client.ServiceInfos;
 import com.zdatbit.client.communication.Connect2Server;
 import com.zdatbit.client.exception.ProtocolException;
@@ -25,6 +26,13 @@ public class ProxyHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        new ClientStart().start();
+        try{
+            Thread.sleep(10000);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        System.out.println("-----------------------"+ServiceInfos.registerInfos.size()+"===================="+ServiceInfos.registerInfos+"*********"+serviceName);
         ServiceRegisterEntity serviceRegister = ServiceInfos.registerInfos.get(serviceName);
         if(serviceName==null||serviceName.length()==0){
             throw new ProtocolException("请检查协议格式");
@@ -39,11 +47,11 @@ public class ProxyHandler implements InvocationHandler {
         if(serviceRegister.getServiceImpl()==null){
             throw new ServiceNotFoundException("未发现注册服务");
         }
-        if(serviceRegister.getServiceImpl()==serviceImpl){
+//        if(serviceRegister.getServiceImpl().equalsIgnoreCase(serviceImpl)){
             //连接远程服务器
             Connect2Server connect2Server = new Connect2Server(serviceRegister);
             connect2Server.connAndSendMessage();
-        }
+//        }
         return null;
     }
 }

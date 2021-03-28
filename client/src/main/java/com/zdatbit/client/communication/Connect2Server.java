@@ -60,9 +60,10 @@ public class Connect2Server {
                         }
                     });
 
-            ChannelFuture f = client.connect(host, Integer.parseInt(port)).sync();
+            ChannelFuture f = client.connect("localhost", Integer.parseInt(port)).sync();
             //todo 发往服务器的数据
-            ChannelFuture channelFuture = f.channel().writeAndFlush(JSONObject.toJSONString(serviceRegisterEntity)+"\n");
+            f.channel().writeAndFlush(JSONObject.toJSONString(serviceRegisterEntity)+"\n");
+            f.channel().closeFuture().sync();
         }catch(InterruptedException e){
             e.printStackTrace();
         } finally {

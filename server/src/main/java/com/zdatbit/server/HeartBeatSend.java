@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
 public class HeartBeatSend extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String response) throws Exception {
-        System.out.println("收到服务器返回结果："+response);
+        //System.out.println("收到服务器返回结果："+response);
     }
 
     @Override
