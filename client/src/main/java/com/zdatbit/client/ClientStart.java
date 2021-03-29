@@ -26,7 +26,7 @@ public class ClientStart {
     private static String remoteIP = "";
     private static String remotePort = "";
     private static Properties properties;
-    private static String filePath = "C:\\myApplication\\ideaSpace\\simpleRpc\\client\\src\\main\\resources\\config\\config.properties";
+    private static String filePath = "C:\\mywork\\ideaSpace\\simpleRpc\\client\\src\\main\\resources\\config\\config.properties";
     static{
         properties = PropertiesParse.readProperties(filePath);
         remoteIP = properties.getProperty("remoteIP");

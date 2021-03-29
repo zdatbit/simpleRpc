@@ -11,6 +11,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
+        System.out.println("==========================="+s);
         try {
             CommunicationProtocol communicationProtocol = JSONObject.parseObject(s, CommunicationProtocol.class);
             if(communicationProtocol.getServiceImpl()!=null){
@@ -19,7 +20,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
                 if(communicationProtocol.getMethod()!=null){
                     try {
                         Method method = aClass.getMethod(communicationProtocol.getMethod(), communicationProtocol.getParameterTypes());
-                        Object invoke = method.invoke(aClass, communicationProtocol.getParametersList());
+                        Object invoke = method.invoke(aClass.newInstance(), communicationProtocol.getParametersList());
                         System.out.println("调用结果是：" + JSONObject.toJSONString(invoke));
                         channelHandlerContext.writeAndFlush(JSONObject.toJSONString(invoke) + "\n");
                     }catch (Exception e1){

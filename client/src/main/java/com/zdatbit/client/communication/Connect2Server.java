@@ -1,6 +1,7 @@
 package com.zdatbit.client.communication;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zdatbit.common.protocol.CommunicationProtocol;
 import com.zdatbit.common.serverRegister.ServiceRegisterEntity;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -28,11 +29,14 @@ public class Connect2Server {
 
     private ServiceRegisterEntity serviceRegisterEntity;
 
+    private CommunicationProtocol protocol;
+
     public Connect2Server(){}
 
 
-    public Connect2Server(ServiceRegisterEntity serviceRegisterEntity){
+    public Connect2Server(ServiceRegisterEntity serviceRegisterEntity,CommunicationProtocol protocol){
         this.serviceRegisterEntity = serviceRegisterEntity;
+        this.protocol = protocol;
         host = hashIp(serviceRegisterEntity.getIps());
         port = serviceRegisterEntity.getPort();
     }
@@ -62,13 +66,20 @@ public class Connect2Server {
 
             ChannelFuture f = client.connect("localhost", Integer.parseInt(port)).sync();
             //todo 发往服务器的数据
-            f.channel().writeAndFlush(JSONObject.toJSONString(serviceRegisterEntity)+"\n");
+            f.channel().writeAndFlush(JSONObject.toJSONString(protocol)+"\n");
             f.channel().closeFuture().sync();
         }catch(InterruptedException e){
             e.printStackTrace();
         } finally {
             group.shutdownGracefully();
         }
+    }
+
+
+    public CommunicationProtocol communicationProtocol(ServiceRegisterEntity serviceRegisterEntity){
+        CommunicationProtocol protocol = new CommunicationProtocol();
+
+        return protocol;
     }
 
     /**

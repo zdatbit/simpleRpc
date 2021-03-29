@@ -5,6 +5,7 @@ import com.zdatbit.client.ServiceInfos;
 import com.zdatbit.client.communication.Connect2Server;
 import com.zdatbit.client.exception.ProtocolException;
 import com.zdatbit.client.exception.ServiceNotFoundException;
+import com.zdatbit.common.protocol.CommunicationProtocol;
 import com.zdatbit.common.serverRegister.ServiceRegisterEntity;
 
 import java.lang.reflect.InvocationHandler;
@@ -47,11 +48,20 @@ public class ProxyHandler implements InvocationHandler {
         if(serviceRegister.getServiceImpl()==null){
             throw new ServiceNotFoundException("未发现注册服务");
         }
+        method.getName();
 //        if(serviceRegister.getServiceImpl().equalsIgnoreCase(serviceImpl)){
             //连接远程服务器
-            Connect2Server connect2Server = new Connect2Server(serviceRegister);
+            CommunicationProtocol protocol = protocol(serviceRegister,method,args);
+            Connect2Server connect2Server = new Connect2Server(serviceRegister,protocol);
             connect2Server.connAndSendMessage();
 //        }
         return null;
+    }
+
+    public CommunicationProtocol protocol(ServiceRegisterEntity serviceRegisterEntity,Method method,Object[] params){
+        CommunicationProtocol protocol = new CommunicationProtocol();
+        protocol.setMethod(method.getName()).setParameterTypes(method.getParameterTypes())
+                .setParametersList(params).setServiceImpl(serviceRegisterEntity.getServiceImpl());
+        return protocol;
     }
 }
