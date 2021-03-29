@@ -17,9 +17,9 @@ public class PropertiesParse {
     public static Properties readProperties(String filePath) {
         Properties properties = new Properties();
         try{
-            InputStream resourceAsStream =  new FileInputStream(new File(filePath));
-            if(resourceAsStream!=null) {
-                properties.load(resourceAsStream);
+            InputStream inputStream = new FileInputStream(new File(filePath));
+            if(inputStream!=null) {
+                properties.load(inputStream);
             }else{
                 logger.error("properties文件未找到，请核对提供文件路径！");
             }

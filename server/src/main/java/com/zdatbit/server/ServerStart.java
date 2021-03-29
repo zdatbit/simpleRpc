@@ -20,7 +20,7 @@ public class ServerStart {
 
     private static final String basePackage = "com.zdatbit";
 
-    private static final String propertyPath = "C:\\myApplication\\ideaSpace\\simpleRpc\\serviceServer\\src\\main\\resources\\config\\Server.properties";
+    private static final String propertyPath = "C:\\mywork\\ideaSpace\\simpleRpc\\serviceServer\\target\\classes\\config\\server.properties";
 
     private static String serviceName;
     private static String serviceImpl;
