@@ -3,8 +3,9 @@ package com.zdatbit.service;
 public class Communication implements ICommunication{
 
     @Override
-    public void saySomething(String something) {
+    public String saySomething(String something) {
         System.out.println(something);
+        return "hello world";
     }
 
     @Override

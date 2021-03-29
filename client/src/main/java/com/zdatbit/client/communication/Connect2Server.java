@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zdatbit.common.protocol.CommunicationProtocol;
 import com.zdatbit.common.serverRegister.ServiceRegisterEntity;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -25,7 +22,8 @@ public class Connect2Server {
 
     private String host;
     private String port;
-    private String result;
+
+    ServiceResponseHandler handler = new ServiceResponseHandler();
 
     private ServiceRegisterEntity serviceRegisterEntity;
 
@@ -47,8 +45,7 @@ public class Connect2Server {
         this.serviceRegisterEntity = serviceRegisterEntity;
     }
 
-    public void connAndSendMessage(){
-
+    public void connect(){
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap client = new Bootstrap();
         try {
@@ -60,26 +57,21 @@ public class Connect2Server {
                             ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
                             ch.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
                             ch.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
-                            ch.pipeline().addLast(new ServiceResponseHandler(result));
+                            ch.pipeline().addLast(handler);
                         }
                     });
 
-            ChannelFuture f = client.connect("localhost", Integer.parseInt(port)).sync();
-            //todo 发往服务器的数据
-            f.channel().writeAndFlush(JSONObject.toJSONString(protocol)+"\n");
-            f.channel().closeFuture().sync();
+            client.connect("localhost", Integer.parseInt(port)).sync();
         }catch(InterruptedException e){
             e.printStackTrace();
-        } finally {
-            group.shutdownGracefully();
-        }
+        }//注意这里不能关闭连接
     }
 
+    public String getResponse() throws Exception{
 
-    public CommunicationProtocol communicationProtocol(ServiceRegisterEntity serviceRegisterEntity){
-        CommunicationProtocol protocol = new CommunicationProtocol();
-
-        return protocol;
+        ChannelPromise channelPromise = handler.sendMessage(JSONObject.toJSONString(protocol));
+        channelPromise.await();
+        return handler.getData();
     }
 
     /**

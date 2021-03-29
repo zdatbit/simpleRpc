@@ -9,6 +9,7 @@ public class ServiceInvoke {
 
 
     public static void main(String[] args) {
-        communication.saySomething("something");
+        String something = communication.saySomething("something");
+        System.out.println(something);
     }
 }

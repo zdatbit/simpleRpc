@@ -20,7 +20,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
                 if(communicationProtocol.getMethod()!=null){
                     try {
                         Method method = aClass.getMethod(communicationProtocol.getMethod(), communicationProtocol.getParameterTypes());
-                        Object invoke = method.invoke(aClass.newInstance(), communicationProtocol.getParametersList());
+                        Object invoke = method.invoke(aClass.newInstance(), paraList(communicationProtocol));
                         System.out.println("调用结果是：" + JSONObject.toJSONString(invoke));
                         channelHandlerContext.writeAndFlush(JSONObject.toJSONString(invoke) + "\n");
                     }catch (Exception e1){
@@ -34,6 +34,20 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
         }catch (Exception e){
             channelHandlerContext.writeAndFlush(e.getMessage()+"\n");
         }
+    }
+
+
+    public Object[] paraList(CommunicationProtocol communicationProtocol){
+
+        Object[] parametersList = communicationProtocol.getParametersList();
+        Class<?>[] parameterTypes = communicationProtocol.getParameterTypes();
+        Object[] result = new Object[parametersList.length];
+        for(int i=0;i<parametersList.length;i++){
+            Object o = JSONObject.parseObject((String) parametersList[i], parameterTypes[i]);
+            result[i] = o;
+        }
+        return result;
+
     }
 
     @Override

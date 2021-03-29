@@ -39,7 +39,7 @@ public class ProxyHandler implements InvocationHandler {
                 break;
             }
         }
-        System.out.println("-----------------------"+ServiceInfos.registerInfos.size()+"===================="+ServiceInfos.registerInfos+"*********"+serviceName);
+        System.out.println("============================"+ServiceInfos.registerInfos);
         Map<String,ServiceRegisterEntity> serviceRegister = ServiceInfos.registerInfos.get(serviceName);
         if(serviceName==null||serviceName.length()==0){
             throw new ProtocolException("请检查协议格式");
@@ -52,16 +52,20 @@ public class ProxyHandler implements InvocationHandler {
         }
 
         ServiceRegisterEntity serviceRegisterEntity = serviceRegister.get(serviceImpl);
-        System.out.println("======================================="+serviceImpl);
         if(serviceRegisterEntity==null){
             throw new ServiceNotFoundException("未发现注册服务");
         }else{
             //连接远程服务器
             CommunicationProtocol protocol = protocol(serviceRegisterEntity,method,args);
             Connect2Server connect2Server = new Connect2Server(serviceRegisterEntity,protocol);
-            connect2Server.connAndSendMessage();
+            connect2Server.connect();
+            System.out.println("连接之后是否走了下一步");
+            String response = connect2Server.getResponse();
+            System.out.println("客户端调用结果是:"+response);
+            return response;
         }
-        return null;
+        //System.out.println("客户端调用结束......");
+        //return null;
     }
 
 

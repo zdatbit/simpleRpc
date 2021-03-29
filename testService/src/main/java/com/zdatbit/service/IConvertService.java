@@ -4,10 +4,11 @@ import com.zdatbit.common.annotations.SMethod;
 import com.zdatbit.common.annotations.SService;
 
 @SService
-public interface ICommunication {
+public interface IConvertService {
 
     @SMethod
-    public String saySomething(String something);
+    public User conver2User(Person person);
 
-    public void anotherThing(String another);
+    @SMethod
+    public Person conver2Person(User user);
 }

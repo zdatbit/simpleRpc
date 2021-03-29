@@ -184,6 +184,7 @@ public class ServerStart {
                         parameters.add(parameters2);
                     }
                     methods1.setParameters(parameters);
+                    methods1.setReturnStr(method.getReturnType().getTypeName());
                     methods.add(methods1);
                 }
             });
