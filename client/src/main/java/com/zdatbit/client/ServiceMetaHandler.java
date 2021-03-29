@@ -7,6 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ServiceMetaHandler extends SimpleChannelInboundHandler<String> {
     @Override
@@ -15,7 +16,15 @@ public class ServiceMetaHandler extends SimpleChannelInboundHandler<String> {
         HashMap<String, JSONObject> hashMap = JSONObject.parseObject(s, HashMap.class);
         hashMap.forEach((key,value)->{
             ServiceRegisterEntity serviceRegisterEntity = JSONObject.parseObject(String.valueOf(value), ServiceRegisterEntity.class);
-            ServiceInfos.registerInfos.put(key,serviceRegisterEntity);
+            String serviceImpl = simpleImpl(serviceRegisterEntity.getServiceImpl());
+            Map<String, ServiceRegisterEntity> registerEntityMap = ServiceInfos.registerInfos.get(serviceImpl);
+            if(registerEntityMap!=null){
+                registerEntityMap.put(serviceImpl,serviceRegisterEntity);
+            }else{
+                Map<String,ServiceRegisterEntity> map = new HashMap<>();
+                map.put(serviceImpl,serviceRegisterEntity);
+                ServiceInfos.registerInfos.put(key,map);
+            }
         });
 
     }
@@ -23,5 +32,11 @@ public class ServiceMetaHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
+    }
+
+
+    public String simpleImpl(String serviceImpl){
+        int index = serviceImpl.lastIndexOf(".");
+        return serviceImpl.substring(index+1);
     }
 }

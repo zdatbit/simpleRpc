@@ -7,5 +7,5 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ServiceInfos {
 
-    public static Map<String, ServiceRegisterEntity> registerInfos = new ConcurrentHashMap<>();
+    public static Map<String, Map<String,ServiceRegisterEntity>> registerInfos = new ConcurrentHashMap<>();
 }

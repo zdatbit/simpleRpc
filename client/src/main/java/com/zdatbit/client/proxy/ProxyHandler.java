@@ -7,11 +7,16 @@ import com.zdatbit.client.exception.ProtocolException;
 import com.zdatbit.client.exception.ServiceNotFoundException;
 import com.zdatbit.common.protocol.CommunicationProtocol;
 import com.zdatbit.common.serverRegister.ServiceRegisterEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 public class ProxyHandler implements InvocationHandler {
+
+    Logger logger = LoggerFactory.getLogger(ProxyHandler.class);
 
     private String serviceName;
     private String serviceImpl;
@@ -28,13 +33,14 @@ public class ProxyHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         new ClientStart().start();
-        try{
-            Thread.sleep(10000);
-        }catch (InterruptedException e){
-            e.printStackTrace();
+        //如果没有拉取到服务信息，自旋
+        for(;;){
+            if(ServiceInfos.registerInfos.size()>0){
+                break;
+            }
         }
         System.out.println("-----------------------"+ServiceInfos.registerInfos.size()+"===================="+ServiceInfos.registerInfos+"*********"+serviceName);
-        ServiceRegisterEntity serviceRegister = ServiceInfos.registerInfos.get(serviceName);
+        Map<String,ServiceRegisterEntity> serviceRegister = ServiceInfos.registerInfos.get(serviceName);
         if(serviceName==null||serviceName.length()==0){
             throw new ProtocolException("请检查协议格式");
         }
@@ -45,19 +51,27 @@ public class ProxyHandler implements InvocationHandler {
             throw new ProtocolException("请检查协议格式");
         }
 
-        if(serviceRegister.getServiceImpl()==null){
+        ServiceRegisterEntity serviceRegisterEntity = serviceRegister.get(serviceImpl);
+        System.out.println("======================================="+serviceImpl);
+        if(serviceRegisterEntity==null){
             throw new ServiceNotFoundException("未发现注册服务");
-        }
-        method.getName();
-//        if(serviceRegister.getServiceImpl().equalsIgnoreCase(serviceImpl)){
+        }else{
             //连接远程服务器
-            CommunicationProtocol protocol = protocol(serviceRegister,method,args);
-            Connect2Server connect2Server = new Connect2Server(serviceRegister,protocol);
+            CommunicationProtocol protocol = protocol(serviceRegisterEntity,method,args);
+            Connect2Server connect2Server = new Connect2Server(serviceRegisterEntity,protocol);
             connect2Server.connAndSendMessage();
-//        }
+        }
         return null;
     }
 
+
+    /**
+     * 去调用服务方的通信协议，包括服务实现，方法，参数类型，参数
+     * @param serviceRegisterEntity
+     * @param method
+     * @param params
+     * @return
+     */
     public CommunicationProtocol protocol(ServiceRegisterEntity serviceRegisterEntity,Method method,Object[] params){
         CommunicationProtocol protocol = new CommunicationProtocol();
         protocol.setMethod(method.getName()).setParameterTypes(method.getParameterTypes())

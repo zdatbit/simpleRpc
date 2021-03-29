@@ -10,6 +10,7 @@ public class ProxyFactory {
     public static <T> Object createproxy(Class<?> clazz, String s) {
         String serviceName = getServiceName(s);
         String serviceImpl = getServiceImpl(s);
+        System.out.println("*********************************"+serviceImpl);
         Object o = Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{clazz}, new ProxyHandler(serviceName, serviceImpl));
         return o;
     }

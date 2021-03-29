@@ -15,6 +15,7 @@ public class ServiceRegisterEntity {
     /**服务接口**/
     private List<String> serviceInter;
     /**服务实现**/
+    //todo 这里有可能有多个实现，需要确定去调用哪个方法
     private String serviceImpl;
     /**方法列表**/
     private List<Methods> methodsList;

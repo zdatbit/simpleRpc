@@ -20,7 +20,7 @@ public class ServerStart {
 
     private static final String basePackage = "com.zdatbit";
 
-    private static final String propertyPath = "C:\\mywork\\ideaSpace\\simpleRpc\\serviceServer\\target\\classes\\config\\server.properties";
+    private static final String propertyPath = "config/localConfig.properties";
 
     private static String serviceName;
     private static String serviceImpl;
@@ -30,14 +30,16 @@ public class ServerStart {
     private static String remotePort;
 
     private static Properties properties;
+    private static Properties jarProperties;
 
     static{
-        properties = PropertiesParse.readProperties(propertyPath);
+        properties = PropertiesParse.readProperties();
+        jarProperties = PropertiesParse.readInJar(propertyPath);
         serviceName = properties.getProperty("service.name");
         serviceImpl = properties.getProperty("service.impl");
         servicePort = properties.getProperty("service.port");
-        remoteIP = properties.getProperty("remoteIP");
-        remotePort = properties.getProperty("remotePort");
+        remoteIP = jarProperties.getProperty("remoteIP");
+        remotePort = jarProperties.getProperty("remotePort");
     }
 
     public static void main(String[] args) {
