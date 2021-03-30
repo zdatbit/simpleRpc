@@ -14,7 +14,7 @@ public class CommunicationProtocol {
     /**调用的方法**/
     private String method;
     /**参数类型**/
-    private Class<?>[] parameterTypes;
+    private List<String> parameterTypes;
     /**传入的参数**/
-    private Object[] parametersList;
+    private String[] parametersList;
 }
