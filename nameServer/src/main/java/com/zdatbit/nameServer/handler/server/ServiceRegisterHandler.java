@@ -17,15 +17,7 @@ public class ServiceRegisterHandler extends SimpleChannelInboundHandler<String> 
         System.out.println("----------------------------"+msg);
         ServiceRegisterEntity serviceRegisterEntity = JSON.parseObject(msg, ServiceRegisterEntity.class);
         if(serviceRegisterEntity.getServiceImpl()!=null&&serviceRegisterEntity.getServiceInter()!=null&&serviceRegisterEntity.getMethodsList()!=null) {
-            synchronized (ServiceRegisterHandler.class){
-                if(ServiceInfos.serviceInfos.get(serviceRegisterEntity.getServiceName())==null) {
-                    ServiceInfos.serviceInfos.put(serviceRegisterEntity.getServiceName(), serviceRegisterEntity);
-                }else{
-                    ServiceRegisterEntity registerEntity = ServiceInfos.serviceInfos.get(serviceRegisterEntity.getServiceName());
-                    registerEntity.getIps().addAll(serviceRegisterEntity.getIps());
-                }
-
-            }
+            ServiceInfos.addNewNode(serviceRegisterEntity);
             channelHandlerContext.writeAndFlush("服务信息上传成功\n");
         }
     }
@@ -42,4 +34,6 @@ public class ServiceRegisterHandler extends SimpleChannelInboundHandler<String> 
         cause.printStackTrace();
         System.out.println("error发生");
     }
+
+
 }

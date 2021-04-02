@@ -48,18 +48,15 @@ public class ProxyHandler implements InvocationHandler {
             }
         }
         System.out.println("============================"+ServiceInfos.registerInfos);
-        Map<String,ServiceRegisterEntity> serviceRegister = ServiceInfos.registerInfos.get(serviceName);
-        if(serviceName==null||serviceName.length()==0){
+        if(ServiceInfos.registerInfos==null||ServiceInfos.registerInfos.size()<=0){
             throw new ProtocolException("请检查协议格式");
         }
-        if(serviceRegister==null){
-            throw new ServiceNotFoundException();
-        }
+
         if(serviceImpl==null||serviceName.length()==0){
             throw new ProtocolException("请检查协议格式");
         }
 
-        ServiceRegisterEntity serviceRegisterEntity = serviceRegister.get(serviceImpl);
+        ServiceRegisterEntity serviceRegisterEntity = ServiceInfos.getRandomService();
         if(serviceRegisterEntity==null){
             throw new ServiceNotFoundException("未发现注册服务");
         }else{

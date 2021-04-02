@@ -1,9 +1,9 @@
 package com.zdatbit.server;
 
 import com.zdatbit.common.Config;
-import com.zdatbit.common.HeartBeat;
 import com.zdatbit.common.annotations.SMethod;
 import com.zdatbit.common.annotations.SService;
+import com.zdatbit.common.entity.HeartBeat;
 import com.zdatbit.common.serverRegister.Methods;
 import com.zdatbit.common.serverRegister.Parameters;
 import com.zdatbit.common.serverRegister.ServiceRegisterEntity;
@@ -57,16 +57,21 @@ public class ServerStart {
         ClassLoader classLoader = getClass().getClassLoader();
         Set<Class> classes = loadClass(basePackage, classLoader);
         ServiceRegisterEntity registerEntity = parseRegisterInfo(classes);
-        client = new RegistryClient(remoteIP,Integer.parseInt(remotePort),heartBeat,registerEntity);
+        registerEntity.setHeartBeat(heartBeat);
+        //只上传服务的配置信息
+        client = new RegistryClient(remoteIP,Integer.parseInt(remotePort),registerEntity);
         new Thread(()->client.register()).start();
 
         //服务启动
-
         new Thread(()->new Server(servicePort).start()).start();
 
 
     }
 
+    /**
+     * 解析心跳信息
+     * @return
+     */
     private HeartBeat parseHeatBeat() {
         //加载配置文件解析服务ip和端口号
         HeartBeat heartBeat = new HeartBeat();
@@ -75,6 +80,13 @@ public class ServerStart {
         String clusterName = properties.getProperty(Config.CLUSTER_NAME);
         heartBeat.setClusterName(clusterName);
         heartBeat.setLastUpdate(System.currentTimeMillis());
+        heartBeat.setPort(servicePort);
+        try{
+            String hostAddress = InetAddress.getLocalHost().getHostAddress();
+            heartBeat.setIp(hostAddress);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return heartBeat;
     }
 
@@ -192,9 +204,7 @@ public class ServerStart {
         registerEntity.setMethodsList(methods);
         try {
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
-            Set<String> set = new HashSet<>();
-            set.add(hostAddress);
-            registerEntity.setIps(set);
+            registerEntity.setIp(hostAddress);
         }catch (Exception e){
             e.printStackTrace();
         }

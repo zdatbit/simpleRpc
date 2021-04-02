@@ -1,7 +1,6 @@
 package com.zdatbit.server;
 
 import com.alibaba.fastjson.JSON;
-import com.zdatbit.common.HeartBeat;
 import com.zdatbit.common.serverRegister.ServiceRegisterEntity;
 import com.zdatbit.common.utils.CommonPool;
 import io.netty.bootstrap.Bootstrap;
@@ -19,24 +18,26 @@ import io.netty.util.CharsetUtil;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 连接nameServer，发送服务注册信息及心跳信息
+ */
 public class RegistryClient{
     private EventLoopGroup group = new NioEventLoopGroup();
     private Bootstrap client = new Bootstrap();
     private String ipAddress;
     private int port;
-    private HeartBeat heartBeat;
     private ServiceRegisterEntity serviceRegisterEntity;
 
     public RegistryClient(){
 
     }
 
-    public RegistryClient(String ipAddress,int port,HeartBeat heartBeat,ServiceRegisterEntity serviceRegisterEntity){
+    public RegistryClient(String ipAddress,int port,ServiceRegisterEntity serviceRegisterEntity){
         this.ipAddress = ipAddress;
         this.port = port;
-        this.heartBeat = heartBeat;
         this.serviceRegisterEntity = serviceRegisterEntity;
     }
+
 
     public void register(){
         try {
@@ -54,8 +55,6 @@ public class RegistryClient{
 
             ChannelFuture f = client.connect(ipAddress, port).sync();
             CommonPool.scheduledExecutorService.scheduleAtFixedRate(()->{
-                heartBeat.setLastUpdate(System.currentTimeMillis());
-                f.channel().writeAndFlush(JSON.toJSONString(heartBeat)+"\n");
                 f.channel().writeAndFlush(JSON.toJSONString(serviceRegisterEntity)+"\n");
             },0,5, TimeUnit.SECONDS);
             f.channel().closeFuture().sync();

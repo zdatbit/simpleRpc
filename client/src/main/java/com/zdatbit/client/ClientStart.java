@@ -1,5 +1,7 @@
 package com.zdatbit.client;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zdatbit.common.protocol.ServiceProtocol;
 import com.zdatbit.common.utils.CommonPool;
 import com.zdatbit.common.utils.PropertiesParse;
 import io.netty.bootstrap.Bootstrap;
@@ -26,6 +28,8 @@ public class ClientStart {
     private static String remoteIP = "";
     private static String remotePort = "";
     private static Properties properties;
+
+    private ServiceProtocol serviceProtocol;
     private static String filePath = "config/config.properties";
     static{
         properties = PropertiesParse.readInJar(filePath);
@@ -60,7 +64,7 @@ public class ClientStart {
 
             ChannelFuture f = client.connect(remoteIP, Integer.parseInt(remotePort)).sync();
             CommonPool.scheduledExecutorService.scheduleAtFixedRate(()->{
-                f.channel().writeAndFlush("fetchMetadata"+"\n");
+                f.channel().writeAndFlush(JSONObject.toJSONString(serviceProtocol) +"\n");
             },0,5, TimeUnit.SECONDS);
             f.channel().closeFuture().sync();
         }catch(InterruptedException e){
