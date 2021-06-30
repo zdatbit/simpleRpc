@@ -1,13 +1,10 @@
 package com.zdatbit.client;
 
-import com.zdatbit.server.SocketServer;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -24,9 +21,6 @@ public class SocketClient {
                 writer.flush();
 
                 System.out.println(reader.readLine());
-                while (reader.readLine() != null) {
-                    System.out.println(reader.readLine());
-                }
             }
 
         }catch (Exception e){
