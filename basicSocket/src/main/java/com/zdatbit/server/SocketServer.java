@@ -9,17 +9,14 @@ import java.util.Scanner;
 public class SocketServer {
 
     public static void main(String[] args) throws Exception{
-        ServerSocket serverSocket = new ServerSocket(8080);
+        SocketServer socketServer = new SocketServer();
+        socketServer.accept(8080);
+    }
+
+    public void accept(int port) throws Exception{
+        ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
             Socket resSocket = serverSocket.accept();
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(resSocket.getInputStream()));
-//            BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(resSocket.getOutputStream()));
-//            System.out.println(reader.readLine());
-//            Scanner scanner = new Scanner(System.in);
-//            outputStream.write(scanner.nextLine() + "\n");
-//            outputStream.flush();
-//            reader.close();
-//            outputStream.close();
             new Thread(new Handler(resSocket)).start();
         }
     }
