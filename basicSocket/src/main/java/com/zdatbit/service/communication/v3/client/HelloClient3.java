@@ -1,11 +1,14 @@
 package com.zdatbit.service.communication.v3.client;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.zdatbit.service.communication.v3.entity.MsgRsp;
+import com.zdatbit.service.communication.v3.entity.TestEntity;
 import com.zdatbit.service.communication.v3.protocol.TransInfo3;
 import com.zdatbit.service.communication.v3.service.HelloService3;
 import com.zdatbit.service.communication.v3.service.IHelloService3;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -20,7 +23,7 @@ public class HelloClient3 {
                     @Override
                     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                         Socket socket = new Socket();
-                        socket.connect(new InetSocketAddress("localhost",8080));
+                        socket.connect(new InetSocketAddress("192.168.1.7",8080));
 
                         //這裡就有問題了,不知道怎麼傳輸對象和接收對象,先用java自帶的序列化和反序列化方式
                         TransInfo3 info = new TransInfo3();
@@ -29,21 +32,32 @@ public class HelloClient3 {
                         info.setMethodName(method.getName());
                         info.setParaTypes(paraTypes(method));
                         info.setArgs(args);
-                        ObjectOutputStream writer = new ObjectOutputStream(socket.getOutputStream());
-                        writer.writeObject(info);
-                        writer.flush();
+                        String sendMsg = JSON.toJSONString(info);
+                        System.out.println(sendMsg);
+                        DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                        outputStream.write(sendMsg.getBytes());
+                        //ObjectOutputStream writer = new ObjectOutputStream(socket.getOutputStream());
+                        //writer.writeObject(info);
+                        //writer.flush();
+                        outputStream.flush();
 
-
-                        ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
-
-                        Object object = reader.readObject();
-                        reader.close();
-                        writer.close();
-                        return object;
+//                        ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
+//
+//                        Object object = reader.readObject();
+                        //reader.close();
+                        //writer.close();
+                        String result = "";
+                        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+                        byte[] bytes = new byte[16];
+                        while(inputStream.read(bytes)!=-1){
+                            result+=bytes;
+                        }
+                        System.out.println(result);
+                        return JSONObject.parseObject(result,method.getReturnType());
                     }
                 });
-        String hello = helloService.hello();
-        System.out.println(hello);
+        MsgRsp msgRsp = helloService.getRsp("hello world",new TestEntity("msg","name"));
+        System.out.println(JSONObject.toJSONString(msgRsp));
     }
 
 
