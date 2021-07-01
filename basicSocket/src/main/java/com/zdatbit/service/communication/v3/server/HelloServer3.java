@@ -2,6 +2,8 @@ package com.zdatbit.service.communication.v3.server;
 
 import com.zdatbit.service.communication.v3.protocol.TransInfo3;
 
+import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
@@ -26,20 +28,17 @@ public class HelloServer3 {
 
         public void run(){
             try {
-                ObjectInputStream inputStream= new ObjectInputStream(socket.getInputStream());
-                TransInfo3 info = (TransInfo3)inputStream.readObject();
-                Class<?> aClass = Class.forName(info.getClassName());
-                Object o = aClass.newInstance();
-                //反射得到方法的時候，重載的情況下，參數的類型怎麼獲得
-                Method method = aClass.getMethod(info.getMethodName());
-                Object object = method.invoke(o,info.getArgs());
+                String paras = "";
+                byte[] bytes = new byte[1024];
+                DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+                int len = 0;
+                while((len = inputStream.read(bytes))!=-1){
+                    System.out.println(len);
+                    paras+=new String(bytes,0,len);
+                    System.out.println(paras);
+                }
+                System.out.println("参数是："+paras);
 
-
-                ObjectOutputStream outputStream= new ObjectOutputStream(socket.getOutputStream());
-                outputStream.writeObject(object);
-                outputStream.flush();
-                outputStream.close();
-                inputStream.close();
             }catch (Exception e){
                 e.printStackTrace();
             }
