@@ -1,4 +1,4 @@
-package com.zdatbit.client;
+package com.zdatbit.socket.communication.client;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,10 +8,14 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * 客户端，连接8080端口
+ */
 public class SocketClient {
 
     public static void main(String[] args) throws Exception{
-
+        SocketClient client = new SocketClient();
+        client.connect("localhost",8080);
     }
 
     public void connect(String ip,int port) throws Exception{

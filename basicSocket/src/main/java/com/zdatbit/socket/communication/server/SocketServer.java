@@ -1,9 +1,8 @@
-package com.zdatbit.server;
+package com.zdatbit.socket.communication.server;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.channels.SocketChannel;
 import java.util.Scanner;
 
 public class SocketServer {
