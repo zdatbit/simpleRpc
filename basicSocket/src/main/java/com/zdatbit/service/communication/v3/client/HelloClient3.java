@@ -27,12 +27,12 @@ public class HelloClient3 {
                         info.setInterName(IHelloService3.class.getName());
                         info.setClassName(HelloService3.class.getName());
                         info.setMethodName(method.getName());
+                        info.setParaTypes(paraTypes(method));
                         info.setArgs(args);
                         ObjectOutputStream writer = new ObjectOutputStream(socket.getOutputStream());
                         writer.writeObject(info);
                         writer.flush();
 
-                        Class<?> returnType = method.getReturnType();
 
                         ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
 
@@ -44,5 +44,16 @@ public class HelloClient3 {
                 });
         String hello = helloService.hello();
         System.out.println(hello);
+    }
+
+
+    public static String[] paraTypes(Method method){
+        Class<?>[] parameterTypes = method.getParameterTypes();
+
+        String[] types = new String[parameterTypes.length];
+        for(int i=0;i<parameterTypes.length;i++){
+            types[i] = parameterTypes[i].getName();
+        }
+        return types;
     }
 }

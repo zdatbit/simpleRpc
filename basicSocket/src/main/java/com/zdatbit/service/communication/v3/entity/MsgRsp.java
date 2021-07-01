@@ -9,6 +9,6 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class MsgRsp implements Serializable {
 
-    private String id;
-    private int code;
+    private int id;
+    private String code;
 }
