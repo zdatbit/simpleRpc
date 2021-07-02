@@ -1,15 +1,16 @@
 package com.zdatbit.service.communication.v3.server;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zdatbit.service.communication.v3.protocol.TransInfo3;
 
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * 服务端，接收到客户端的请求后，调用本地服务并把结果返回给客户端
+ */
 public class HelloServer3 {
 
     public static void main(String[] args) throws Exception{
@@ -33,15 +34,40 @@ public class HelloServer3 {
                 DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                 int len = 0;
                 while((len = inputStream.read(bytes))!=-1){
-                    System.out.println(len);
                     paras+=new String(bytes,0,len);
-                    System.out.println(paras);
                 }
-                System.out.println("参数是："+paras);
+                TransInfo3 info = JSONObject.parseObject(paras,TransInfo3.class);
 
+                Class<?> aClass = Class.forName(info.getClassName());
+                Object o = aClass.newInstance();
+                Method method = aClass.getMethod(info.getMethodName(),mergeClass(info.getParaTypes()));
+
+                Object invoke = method.invoke(o, mergeArgs(info.getArgs(), mergeClass(info.getParaTypes())));
+
+                DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                outputStream.write(JSONObject.toJSONString(invoke).getBytes());
+                socket.shutdownOutput();
+                outputStream.flush();
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
+    }
+
+
+    public Class<?>[] mergeClass(String[] typeNames) throws Exception{
+        Class<?>[] result = new Class[typeNames.length];
+        for(int i=0;i<typeNames.length;i++){
+            result[i] = Class.forName(typeNames[i]);
+        }
+        return result;
+    }
+
+    public Object[] mergeArgs(String[] args,Class<?>[] clazzs){
+        Object[] result = new Object[args.length];
+        for(int i=0;i<clazzs.length;i++){
+            result[i] = JSONObject.parseObject(args[i],clazzs[i]);
+        }
+        return result;
     }
 }

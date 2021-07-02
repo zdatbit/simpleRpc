@@ -1,4 +1,4 @@
-package com.zdatbit.service.communication.v3.protocol;
+package com.zdatbit.service.communication.v4.protocol4;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransInfo3 implements Serializable {
+public class TransInfo4 implements Serializable {
     /**
      * 接口的全限定名
      */
