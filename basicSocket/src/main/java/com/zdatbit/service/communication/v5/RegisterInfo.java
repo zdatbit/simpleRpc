@@ -3,6 +3,8 @@ package com.zdatbit.service.communication.v5;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 @Data
 @Accessors(chain = true)
 public class RegisterInfo {
@@ -21,7 +23,7 @@ public class RegisterInfo {
     /**
      * 接口全限定名
      */
-    private String interClass;
+    private List<String> interClass;
     /**
      * 实现全限定名
      */
@@ -29,6 +31,6 @@ public class RegisterInfo {
     /**
      * 提供服务的方法名
      */
-    private String[] method;
+    private List<String> method;
 
 }

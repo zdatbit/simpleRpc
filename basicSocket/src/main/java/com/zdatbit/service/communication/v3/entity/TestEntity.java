@@ -1,6 +1,5 @@
 package com.zdatbit.service.communication.v3.entity;
 
-import com.sun.istack.internal.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
