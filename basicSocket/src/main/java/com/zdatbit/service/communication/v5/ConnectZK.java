@@ -10,7 +10,7 @@ public class ConnectZK {
 
     private static final String path = "localhost:2181";
 
-    private String BASE_SERVICES = "/service";
+    private String BASE_SERVICES = "/service/";
 
     /**
      * 向zk注册服务信息
